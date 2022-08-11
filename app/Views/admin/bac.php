@@ -684,11 +684,11 @@
                   <?php if($bacs): ?>
             <?php foreach($bacs as $bac): ?>
             <tr>
-												<td><?php echo $bac['num_bacc']; ?></td>
-												<td><?php echo $bac['nom_prenoms']; ?></td>
-												<td><?php echo $bac['serie']; ?></td>
-												<td><?php echo $bac['annee']; ?></td>
-												<td><?php echo $bac['moyenne']; ?></td>
+												<td><?php echo $bac->num_bacc; ?></td>
+												<td><?php echo $bac->nom_prenoms; ?></td>
+												<td><?php echo $bac->serie; ?></td>
+												<td>0</td>
+												<td>0</td>
 											</tr>
            <?php endforeach; ?>
            <?php endif; ?>
@@ -708,12 +708,7 @@
 								</div>
 								<!-- /.card-body -->
 								<div class="card-footer">
-									  						<?php if ($pager) :?>
-              <?php $pagi_path='bac'; ?>
-              <?php $pager->setPath($pagi_path); ?>
-              <?= $pager->links() ?>
-              <?php endif ?>        
-            
+					
 								</div>
 							</div>
 							<!-- /.card -->

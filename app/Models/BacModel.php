@@ -8,9 +8,9 @@ class BacModel extends Model
 {
     protected $table = 'bac';
     
-    protected $allowedFields = ['num_bacc', 'nom_prenoms','serie','annee','moyenne'];
+    protected $allowedFields = ['num_bacc', 'nom_prenoms','serie','annee','moyenne','nom','prenoms'];
     
-    public function search ()
+    public function search ($data)
     {
        // $query = "SELECT * FROM bac nom_prenoms like '%Tahiry%'";
         
@@ -23,7 +23,9 @@ class BacModel extends Model
         //return $query->getResult();
         
         //$query = $this->db->table($this->table)->select('num_bacc, nom_prenoms, serie')->get();
-        $query = $this->db->table($this->table)->select('num_bacc, nom_prenoms, serie')->get();
+        //$query = $this->db->table($this->table)->select('num_bacc, nom_prenoms, serie')->get();
+        $criteria = ['num_bacc' => $data['num_bacc'], 'serie' => $data['serie'], 'annee' => $data['annee']];
+        $query = $this->db->table($this->table)->where($criteria)->get();
         return $query->getResult();
     }
     public function check($data)

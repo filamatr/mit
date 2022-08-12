@@ -26,11 +26,11 @@ class Bac extends Controller
        
        //$query = $this->where( ['num_bacc' => '7310001'] )
        //->findAll();
-       $data = [
-           'bacs' => $model->search()
+//        $data = [
+//            'bacs' => $model->search()
            
-       ];
-       return view('admin/bac', $data);
+//        ];
+//        return view('admin/bac', $data);
       
        
      //  echo 'test';

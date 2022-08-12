@@ -3,6 +3,7 @@
 
 use CodeIgniter\Model;
 
+
 class BacModel extends Model
 {
     protected $table = 'bac';
@@ -24,5 +25,12 @@ class BacModel extends Model
         //$query = $this->db->table($this->table)->select('num_bacc, nom_prenoms, serie')->get();
         $query = $this->db->table($this->table)->select('num_bacc, nom_prenoms, serie')->get();
         return $query->getResult();
+    }
+    public function check($data)
+    {
+       // $criteria = ['num_bacc' => $num_bacc, 'id <' => $id, 'date >' => $date];
+        $criteria = ['num_bacc' => $data['num_bacc'], 'serie' => $data['serie'], 'annee' => $data['annee']];
+        $nb_results = $this->db->table($this->table)->where($criteria)->countAllResults();
+        return $nb_results;
     }
 }

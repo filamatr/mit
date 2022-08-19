@@ -21,6 +21,11 @@ class InscriptionModel extends Model
         $query = $this->db->table('inscription_etudiant')->get();
         return $query->getResult();
     }
+    public function getInscriptionEtudiantParcoursGradeNiveau($data) {
+        $criteria=['id_parcours'=>$data['id_parcours'],'grade'=>$data['grade'],'niveau'=>$data['niveau']];
+        $query = $this->db->table('inscription_etudiant')->where($criteria)->get();
+        return $query->getResult();
+    }
     
 }
 

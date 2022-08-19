@@ -31,4 +31,10 @@ class UeModel extends Model
             ->countAllResults();
         return $nb_results;
     }
+    public function getUeFromParcoursNiveau($data)
+    {
+        $criteria = ['id_parcours' => $data['id_parcours'], 'semestre' => $data['semestre']];
+        $query = $this->db->table($this->table)->where($criteria)->get();
+        return $query->getResult();
+    }
 }

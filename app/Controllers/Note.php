@@ -23,32 +23,32 @@ class Note extends Controller
 
     public function download()
     {
-        
+
         // $writer->save("php://output");
     }
 
     public function upload()
     {
-        //echo 'ato';
+        // echo 'ato';
         if (null != ($this->request->getVar('download'))) {
             // header('Content-Type: application/vnd.ms-excel');
             // header('Content-Disposition: attachment;filename:"test.xlsx"');
-            //echo 'tato';
-            $inscription_model=new InscriptionModel();
-            $etudiants=$inscription_model->getInscriptionEtudiant();
-            $nb_etudiants=count($etudiants);
+            // echo 'tato';
+            $inscription_model = new InscriptionModel();
+            $etudiants = $inscription_model->getInscriptionEtudiant();
+            $nb_etudiants = count($etudiants);
             print_r($etudiants);
             $spreadsheet = new SpreadSheet();
             $sheet = $spreadsheet->getActiveSheet();
-            $i=1;
-            foreach ($etudiants as $etudiant)
-            //for($i=0;$i<$nb_etudiants;$i++)
+            $i = 1;
+            foreach ($etudiants as $etudiant) 
+            // for($i=0;$i<$nb_etudiants;$i++)
             {
-                $sheet->setCellValue('A'.$i, $etudiant->id_inscription);
-                $sheet->setCellValue('B'.$i, $etudiant->nom);
-                $sheet->setCellValue('C'.$i, $etudiant->prenoms);
-                $sheet->setCellValue('D'.$i, rand(0, 20));
-                $i++;
+                $sheet->setCellValue('A' . $i, $etudiant->id_inscription);
+                $sheet->setCellValue('B' . $i, $etudiant->nom);
+                $sheet->setCellValue('C' . $i, $etudiant->prenoms);
+                $sheet->setCellValue('D' . $i, rand(0, 20));
+                $i ++;
             }
             $writer = new Xlsx($spreadsheet);
             $writer->save("test.xlsx");
@@ -88,57 +88,66 @@ class Note extends Controller
 
     public function affiche_note()
     {
-        $notes=array();
-       // $ecue_model=new EcueModel();
-       // $ecue_model->getEcueFromUe($id_ue)
-       $ue_model=new UeModel();
-       $ecue_model=new EcueModel();
-       $critere=['id_parcours'=>80, 'semestre'=>1];
-       $criteria=['id_parcours'=>80, 'niveau'=>1,'grade'=>'L'];
-       $inscription_model=new InscriptionModel();
-       $etudiants=$inscription_model->getInscriptionEtudiantParcoursGradeNiveau($criteria);
-       $ues=$ue_model->getUeFromParcoursNiveau($critere);
-       //print_r($ues);
-       
-       echo '<table border=1>';
-       foreach ($etudiants as $etudiant)
-       {
-        echo '<tr >';
-        
-        echo '<td>'.$etudiant->id_inscription.'</td>';
-        echo '<td>'.$etudiant->nom.'</td>';
-        echo '<td>'.$etudiant->prenoms.'</td>';
-        foreach ($ues as $ue)
-        {
-            $ecues=$ecue_model->getEcueFromUe($ue->id_ue);
-            foreach ($ecues as $ecue)
-            {
-                $critere_note=[
-                    'id_inscription'=>$etudiant->id_inscription,
-                    'id_ecue'=>$ue->id_ue,
-                    
-                ];
-                echo '<td>'.$ecue->nom_ecue.'</td>';
-            }
-        }
-        
-        echo'</tr>';
-       }
-       
-       echo '<table>';
-       /*foreach ($ues as $ue)
-       {
-           echo $ue->nom_ue.'['.$ue->credit.']   ';
-            echo '<PRE>';
-            $ecues=$ecue_model->getEcueFromUe($ue->id_ue);
-            foreach ($ecues as $ecue)
-            {
-                echo $ecue->nom_ecue.'['.$ecue->credit.']  - ';
-            }
-            echo '<PRE>';
-       
-       }*/
-    }
+        $notes = array();
+        // $ecue_model=new EcueModel();
+        // $ecue_model->getEcueFromUe($id_ue)
+        $ue_model = new UeModel();
+        $ecue_model = new EcueModel();
+        $critere = [
+            'id_parcours' => 80,
+            'semestre' => 1
+        ];
+        $criteria = [
+            'id_parcours' => 80,
+            'niveau' => 1,
+            'grade' => 'L'
+        ];
+        $inscription_model = new InscriptionModel();
+        $etudiants = $inscription_model->getInscriptionEtudiantParcoursGradeNiveau($criteria);
+        $ues = $ue_model->getUeFromParcoursNiveau($critere);
+        // print_r($ues);
+        $model_note = new NoteModel();
+        echo '<table border=1>';
+        foreach ($etudiants as $etudiant) {
+            echo '<tr >';
 
+            echo '<td>' . $etudiant->id_inscription . '</td>';
+            echo '<td>' . $etudiant->nom . '</td>';
+            echo '<td>' . $etudiant->prenoms . '</td>';
+            foreach ($ues as $ue) {
+                $ecues = $ecue_model->getEcueFromUe($ue->id_ue);
+                $sum_note=0;
+                foreach ($ecues as $ecue) {
+                    $critere_note = [
+                        'id_inscription' => $etudiant->id_inscription,
+                        'id_ecue' => $ue->id_ue
+                    ];
+                    $note_ecue=$model_note->getNoteById_inscription_IdEcue($critere_note);
+                    $sum_note+=$note_ecue*$ecue->credit;
+                    echo '<td>' . $ecue->nom_ecue . ' (' . $note_ecue . ') </td>';
+                }
+                $moyenne_ue=$sum_note/$ue->credit;
+                echo '<td> [' . $moyenne_ue .']</td>';
+            }
+
+            echo '</tr>';
+        }
+
+        echo '<table>';
+        /*
+         * foreach ($ues as $ue)
+         * {
+         * echo $ue->nom_ue.'['.$ue->credit.'] ';
+         * echo '<PRE>';
+         * $ecues=$ecue_model->getEcueFromUe($ue->id_ue);
+         * foreach ($ecues as $ecue)
+         * {
+         * echo $ecue->nom_ecue.'['.$ecue->credit.'] - ';
+         * }
+         * echo '<PRE>';
+         *
+         * }
+         */
+    }
 }
 
